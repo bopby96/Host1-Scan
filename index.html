@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ລະບົບສະແກນໃບໜ້າ - wolf2626</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Noto Sans Lao', sans-serif; min-height: 100vh; background-color: #f8fafc; color: #334155; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
@@ -21,9 +21,13 @@
     .btn:active { transform: scale(0.97); }
     .btn-in { background: linear-gradient(135deg, #f5d76e 0%, #d4af37 50%, #b8860b 100%); color: white; box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3); }
     .btn-out { background: white; color: #d4af37; border: 2px solid #d4af37; }
-    .btn-list { background: #e2e8f0; color: #475569; }
     .btn-cancel { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
     
+    /* ສຳລັບປຸ່ມດ້ານລຸ່ມ (Bottom Bar) */
+    .bottom-bar { position: fixed; bottom: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; gap: 15px; max-width: 360px; margin: 0 auto; z-index: 10; }
+    .btn-bottom { flex: 1; padding: 12px 10px; font-size: 15px; border-radius: 10px; background: white; color: #64748b; border: 1px solid #cbd5e1; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; font-weight: bold; transition: all 0.3s; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 5px;}
+    .btn-bottom:hover, .btn-bottom:active { color: #d4af37; border-color: #d4af37; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15); }
+
     .input-field { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #cbd5e1; margin-bottom: 15px; font-size: 16px; font-family: inherit; }
     .input-field:focus { outline: none; border-color: #d4af37; }
     
@@ -36,7 +40,7 @@
     .success { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
     .error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
 
-    #loader { position: fixed; inset: 0; background: rgba(255,255,255,0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; font-weight: bold; color: #d4af37; font-size: 18px; }
+    #loader { position: fixed; inset: 0; background: rgba(255,255,255,0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; font-weight: bold; color: #d4af37; font-size: 18px; transition: opacity 0.3s; }
     .spinner { width: 40px; height: 40px; border: 4px solid #f3f4f6; border-top: 4px solid #d4af37; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
@@ -48,17 +52,23 @@
     <span>ກຳລັງໂຫຼດລະບົບ...</span>
   </div>
 
+  <!-- HOME -->
   <div id="view-home" class="view">
     <div class="logo-container">
       <span class="logo-icon">👑</span> 
-      </div>
+    </div>
     <h1>ລະບົບສະແກນໃບໜ້າ</h1>
     <button class="btn btn-in" onclick="openScan('ເຂົ້າວຽກ')">📥 ສະແກນເຂົ້າວຽກ</button>
     <button class="btn btn-out" onclick="openScan('ອອກວຽກ')">📤 ສະແກນອອກວຽກ</button>
-    <button class="btn btn-list" onclick="openRegister()">+ ລົງທະບຽນພະນັກງານ</button>
-    <button class="btn btn-list" style="background: #cbd5e1; margin-top: 10px;" onclick="openEmployeeList()">📋 ລາຍຊື່ພະນັກງານທັງໝົດ</button>
+    
+    <!-- ແຖບປຸ່ມດ້ານລຸ່ມ (Bottom Bar) -->
+    <div class="bottom-bar">
+      <button class="btn-bottom" onclick="openEmployeeList()">📋 ລາຍຊື່</button>
+      <button class="btn-bottom" onclick="openRegister()">+ ລົງທະບຽນ</button>
+    </div>
   </div>
 
+  <!-- SCAN -->
   <div id="view-scan" class="view">
     <h2 id="scan-title">ສະແກນໃບໜ້າ</h2>
     <div class="video-container">
@@ -68,7 +78,8 @@
     <button class="btn btn-cancel" onclick="goHome()">ຍ້ອນກັບ</button>
   </div>
 
-  <div id="view-register" class="view" style="padding-top: 50px;">
+  <!-- REGISTER -->
+  <div id="view-register" class="view" style="padding-top: 50px; padding-bottom: 40px;">
     <h2>ລົງທະບຽນໃໝ່</h2>
     <input type="text" id="reg-id" class="input-field" disabled placeholder="ກຳລັງໂຫຼດລະຫັດ...">
     <input type="text" id="reg-name" class="input-field" placeholder="ຊື່ ແລະ ນາມສະກຸນ (ຈຳເປັນ)">
@@ -87,6 +98,7 @@
     </div>
   </div>
 
+  <!-- EMPLOYEE LIST -->
   <div id="view-employee-list" class="view">
     <h2>📋 ລາຍຊື່ພະນັກງານ</h2>
     <div id="emp-list-container" style="width: 100%; max-height: 400px; overflow-y: auto; background: white; border-radius: 12px; padding: 10px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
@@ -96,7 +108,7 @@
   </div>
 
   <script>
-    // ⚠️⚠️ เอาลิงก์ Web App URL (หลังกด New Version) มาใส่ตรงนี้ครับ ⚠️⚠️
+    // ⚠️⚠️ ເອົາລິ້ງ Web App URL ມາໃສ່ບ່ອນນີ້ເວລາເອົາໄປໃຊ້ງານຈິງ ⚠️⚠️
     const API_URL = 'https://script.google.com/macros/s/AKfycby1dFXYXK06OVq7WuXMiOF8pDAh02ykId9HRR2zuHhqJQKiu3cODet1mKh_32TRmi8V5w/exec'; 
     
     let faceMatcher = null, currentStream = null, scanInterval = null;
@@ -139,7 +151,7 @@
     function goHome() {
       if(currentStream) currentStream.getTracks().forEach(t => t.stop());
       if(scanInterval) clearInterval(scanInterval);
-      location.reload();
+      switchView('view-home');
     }
 
     function setStatus(id, text, type) {
@@ -180,6 +192,12 @@
         const locPassed = await checkLocation();
         if(!locPassed) { setStatus('scan-status', '❌ ຢູ່ນອກພື້ນທີ່ຮ້ານ', 'error'); return; }
         
+        if(!API_URL) {
+           setStatus('scan-status', '⚠️ ໂໝດຈຳລອງ: ແກ້ງສະແກນສຳເລັດ', 'success'); 
+           setTimeout(goHome, 2000);
+           return;
+        }
+
         if(!faceMatcher) { setStatus('scan-status', '⚠️ ບໍ່ມີຂໍ້ມູນພະນັກງານ', 'error'); return; }
         
         setStatus('scan-status', '🤖 ກຳລັງປະມວນຜົນ...', 'wait');
@@ -218,9 +236,13 @@
       switchView('view-register');
       setStatus('reg-status', '', 'wait'); document.getElementById('reg-status').style.display = 'none';
       try {
-        const res = await fetch(API_URL + '?action=getNextEmpId');
-        const data = await res.json();
-        document.getElementById('reg-id').value = data.nextId;
+        if(API_URL) {
+            const res = await fetch(API_URL + '?action=getNextEmpId');
+            const data = await res.json();
+            document.getElementById('reg-id').value = data.nextId;
+        } else {
+            document.getElementById('reg-id').value = "FR001 (ຈຳລອງ)";
+        }
         
         const video = document.getElementById('video-reg');
         currentStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
@@ -244,6 +266,16 @@
       }
       
       setStatus('reg-status', '⏳ ກຳລັງບັນທຶກ...', 'wait');
+      
+      if(!API_URL) {
+          setTimeout(() => {
+              setStatus('reg-status', '✅ ລົງທະບຽນສຳເລັດ! (ຈຳລອງ)', 'success');
+              document.getElementById('btn-save').disabled = false;
+              setTimeout(goHome, 2000);
+          }, 1000);
+          return;
+      }
+
       try {
         const res = await fetch(API_URL, {
           method: 'POST',
@@ -271,6 +303,34 @@
       const container = document.getElementById('emp-list-container');
       container.innerHTML = '<div class="status-box wait">⏳ ກຳລັງໂຫຼດຂໍ້ມູນ...</div>';
 
+      // ຖ້າເປັນໂໝດຈຳລອງ (ຍັງບໍ່ມີ API) ໃຫ້ສະແດງຂໍ້ມູນຕົວຢ່າງ
+      if(!API_URL) {
+          setTimeout(() => {
+              let html = '<table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">';
+              html += '<tr style="background: #f1f5f9;"><th style="padding: 10px; border-bottom: 2px solid #cbd5e1;">ລະຫັດ</th><th style="padding: 10px; border-bottom: 2px solid #cbd5e1;">ຊື່</th><th style="padding: 10px; border-bottom: 2px solid #cbd5e1;">ຕຳແໜ່ງ</th></tr>';
+              
+              // ຂໍ້ມູນຈຳລອງ (Mock Data)
+              const mockEmployees = [
+                  { id: 'FR001', name: 'ສົມຊາຍ ໃຈດີ', dept: 'ຜູ້ຈັດການ (ຈຳລອງ)' },
+                  { id: 'FR002', name: 'ນາງ ສີດາ', dept: 'ພະນັກງານເສີບ' },
+                  { id: 'FR003', name: 'ທ້າວ ຄຳຫຼ້າ', dept: 'ພະນັກງານຄົວ' }
+              ];
+
+              mockEmployees.forEach(emp => {
+                html += `<tr>
+                  <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #d4af37;">${emp.id}</td>
+                  <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${emp.name}</td>
+                  <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; color: #64748b;">${emp.dept}</td>
+                </tr>`;
+              });
+              html += '</table>';
+              
+              container.innerHTML = html;
+          }, 800); // ປະມວນຜົນຈຳລອງ 0.8 ວິນາທີ
+          return;
+      }
+
+      // ດຶງຂໍ້ມູນຈິງຈາກ Google Sheets
       try {
         const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'getEmployees' }) });
         const data = await res.json();
